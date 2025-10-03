@@ -1,2 +1,8 @@
-Django==5.2.7
-Pillow==11.3.0
+asgiref
+Django
+Pillow
+gunicorn
+packaging
+sqlparse
+tzdata
+whitenoise

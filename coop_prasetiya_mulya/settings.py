@@ -1,11 +1,20 @@
-
 from pathlib import Path
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-h=g5ga&g2buw*8twa)y*x8i2=@jfqxxjpkb%$41k2jqin^$&df'
 DEBUG = True
-ALLOWED_HOSTS = []
+
+APP_NAME = os.environ.get("FLY_APP_NAME")
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', f"{APP_NAME}.fly.dev"]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost",
+    "http://127.0.0.1",
+    f"http://{APP_NAME}.fly.dev",
+    f"https://{APP_NAME}.fly.dev",
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
