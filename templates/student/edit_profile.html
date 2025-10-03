@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block title %}Edit Profil - COOP Prasetiya Mulya{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-user-edit me-2"></i>Edit Profil</h2>
+        <a href="{% url 'student:profile' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Kembali
+        </a>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="card-pm mb-4">
+            <div class="card-header-pm">Data Diri</div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="{{ form.full_name.id_for_label }}" class="form-label">{{ form.full_name.label }}</label>
+                    {{ form.full_name }}
+                    {% if form.full_name.errors %}
+                    <div class="text-danger">{{ form.full_name.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">NIM</label>
+                    <input type="text" class="form-control" value="{{ student.nim }}" disabled>
+                    <small class="text-muted">NIM tidak dapat diubah</small>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Program Studi</label>
+                    <input type="text" class="form-control" value="{{ student.get_program_display }}" disabled>
+                    <small class="text-muted">Program studi tidak dapat diubah</small>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="text" class="form-control" value="{{ student.user.email }}" disabled>
+                    <small class="text-muted">Email tidak dapat diubah</small>
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.whatsapp.id_for_label }}" class="form-label">{{ form.whatsapp.label }}</label>
+                    {{ form.whatsapp }}
+                    {% if form.whatsapp.errors %}
+                    <div class="text-danger">{{ form.whatsapp.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="card-pm mb-4">
+            <div class="card-header-pm">Kompetensi & Profesional</div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="{{ form.ipk.id_for_label }}" class="form-label">{{ form.ipk.label }}</label>
+                    {{ form.ipk }}
+                    {% if form.ipk.errors %}
+                    <div class="text-danger">{{ form.ipk.errors }}</div>
+                    {% endif %}
+                    <small class="text-muted">IPK dalam skala 4.0</small>
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.skills.id_for_label }}" class="form-label">{{ form.skills.label }}</label>
+                    {{ form.skills }}
+                    {% if form.skills.errors %}
+                    <div class="text-danger">{{ form.skills.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.linkedin_url.id_for_label }}" class="form-label">
+                        {{ form.linkedin_url.label }}
+                    </label>
+                    {{ form.linkedin_url }}
+                    {% if form.linkedin_url.errors %}
+                    <div class="text-danger">{{ form.linkedin_url.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.github_url.id_for_label }}" class="form-label">
+                        {{ form.github_url.label }}
+                    </label>
+                    {{ form.github_url }}
+                    {% if form.github_url.errors %}
+                    <div class="text-danger">{{ form.github_url.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="card-pm mb-4">
+            <div class="card-header-pm">Dokumen</div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="{{ form.cv.id_for_label }}" class="form-label">{{ form.cv.label }}</label>
+                    {{ form.cv }}
+                    {% if form.cv.errors %}
+                    <div class="text-danger">{{ form.cv.errors }}</div>
+                    {% endif %}
+                    {% if student.cv %}
+                    <small class="text-muted d-block mt-1">
+                        File saat ini: <a href="{{ student.cv.url }}" target="_blank">{{ student.cv.name }}</a>
+                    </small>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.portfolio.id_for_label }}" class="form-label">{{ form.portfolio.label }}</label>
+                    {{ form.portfolio }}
+                    {% if form.portfolio.errors %}
+                    <div class="text-danger">{{ form.portfolio.errors }}</div>
+                    {% endif %}
+                    {% if student.portfolio %}
+                    <small class="text-muted d-block mt-1">
+                        File saat ini: <a href="{{ student.portfolio.url }}" target="_blank">{{ student.portfolio.name
+                            }}</a>
+                    </small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-3">
+            <button type="submit" class="btn btn-pm-primary">
+                <i class="fas fa-save me-1"></i>Simpan Perubahan
+            </button>
+            <a href="{% url 'student:profile' %}" class="btn btn-outline-secondary">
+                Batal
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,355 @@
+{% extends 'base.html' %}
+{% block title %}Detail Evaluasi - COOP Prasetiya Mulya{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="mb-4">
+        <a href="{% url 'supervisor:evaluations' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-arrow-left me-1"></i>Kembali
+        </a>
+    </div>
+
+    <h2 class="mb-4"><i class="fas fa-clipboard-check me-2"></i>Detail Evaluasi {{ evaluation.get_evaluation_type_display }}</h2>
+
+    <!-- Student Info Card -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="fas fa-user me-2"></i>Informasi Mahasiswa</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Nama:</strong> {{ student.full_name }}</p>
+                    <p><strong>NIM:</strong> {{ student.nim }}</p>
+                    <p><strong>Program Studi:</strong> {{ student.get_program_display }}</p>
+                    <p><strong>Angkatan:</strong> {{ student.angkatan }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Perusahaan:</strong> {{ placement.company_name }}</p>
+                    <p><strong>Posisi:</strong> {{ placement.position }}</p>
+                    <p><strong>Periode:</strong> {{ placement.start_date|date:"d M Y" }} - {{ placement.end_date|date:"d M Y" }}</p>
+                    <p><strong>Supervisor:</strong> {{ evaluation.supervisor.full_name }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overall Rating -->
+    {% if evaluation.overall_rating %}
+    <div class="card mb-4 border-success">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0"><i class="fas fa-trophy me-2"></i>Penilaian Keseluruhan</h5>
+        </div>
+        <div class="card-body text-center">
+            <h1 class="display-3 mb-0">{{ evaluation.overall_rating|floatformat:2 }}<small class="text-muted">/5.0</small></h1>
+            <p class="mb-2">
+                {% if evaluation.overall_rating >= 4.5 %}
+                    <span class="badge bg-success fs-6">Sangat Baik</span>
+                {% elif evaluation.overall_rating >= 3.5 %}
+                    <span class="badge bg-primary fs-6">Baik</span>
+                {% elif evaluation.overall_rating >= 3.0 %}
+                    <span class="badge bg-info fs-6">Cukup</span>
+                {% else %}
+                    <span class="badge bg-warning fs-6">Perlu Perbaikan</span>
+                {% endif %}
+            </p>
+            <p class="mb-0">
+                <i class="fas fa-check-circle me-1"></i>
+                Submitted: {{ evaluation.submitted_at|date:"d F Y, H:i" }}
+            </p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Category Averages -->
+    {% if category_averages %}
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Rata-rata per Kategori</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% for category, average in category_averages.items %}
+                    {% if average %}
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <strong>{{ category }}</strong>
+                            <span class="badge bg-primary">{{ average|floatformat:2 }}</span>
+                        </div>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar" role="progressbar"
+                                 style="width: {{ average|floatformat:0|add:'0' }}%;"
+                                 aria-valuenow="{{ average }}" aria-valuemin="0" aria-valuemax="5">
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Detailed Scores -->
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h5 class="mb-0"><i class="fas fa-list me-2"></i>Penilaian Detail</h5>
+        </div>
+        <div class="card-body">
+            <!-- Kualitas Kerja -->
+            <h6 class="text-primary mb-3"><i class="fas fa-star me-2"></i>Kualitas Kerja</h6>
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="score-item">
+                        <span>Keakuratan dan Ketelitian:</span>
+                        <span class="score-badge">{{ evaluation.accuracy|default:"-" }}</span>
+                    </div>
+                    <div class="score-item">
+                        <span>Kerapihan Hasil Kerja:</span>
+                        <span class="score-badge">{{ evaluation.neatness|default:"-" }}</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="score-item">
+                        <span>Kemampuan Menyelesaikan Tugas:</span>
+                        <span class="score-badge">{{ evaluation.task_completion|default:"-" }}</span>
+                    </div>
+                    <div class="score-item">
+                        <span>Kreativitas dan Inovasi:</span>
+                        <span class="score-badge">{{ evaluation.creativity|default:"-" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Produktivitas -->
+            <h6 class="text-primary mb-3"><i class="fas fa-chart-line me-2"></i>Produktivitas</h6>
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="score-item">
+                        <span>Jumlah Pekerjaan:</span>
+                        <span class="score-badge">{{ evaluation.work_quantity|default:"-" }}</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="score-item">
+                        <span>Kecepatan:</span>
+                        <span class="score-badge">{{ evaluation.work_speed|default:"-" }}</span>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="score-item">
+                        <span>Konsistensi:</span>
+                        <span class="score-badge">{{ evaluation.consistency|default:"-" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pengetahuan -->
+            <h6 class="text-primary mb-3"><i class="fas fa-brain me-2"></i>Pengetahuan</h6>
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="score-item">
+                        <span>Pemahaman Tugas:</span>
+                        <span class="score-badge">{{ evaluation.task_understanding|default:"-" }}</span>
+                    </div>
+                    <div class="score-item">
+                        <span>Technical Skills:</span>
+                        <span class="score-badge">{{ evaluation.technical_skills|default:"-" }}</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="score-item">
+                        <span>Aplikasi Teori ke Praktik:</span>
+                        <span class="score-badge">{{ evaluation.theory_application|default:"-" }}</span>
+                    </div>
+                    <div class="score-item">
+                        <span>Kemauan Belajar:</span>
+                        <span class="score-badge">{{ evaluation.learning_willingness|default:"-" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kedisiplinan -->
+            <h6 class="text-primary mb-3"><i class="fas fa-clock me-2"></i>Kedisiplinan</h6>
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="score-item">
+                        <span>Ketepatan Waktu:</span>
+                        <span class="score-badge">{{ evaluation.punctuality|default:"-" }}</span>
+                    </div>
+                    <div class="score-item">
+                        <span>Kepatuhan Peraturan:</span>
+                        <span class="score-badge">{{ evaluation.rule_compliance|default:"-" }}</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="score-item">
+                        <span>Tanggung Jawab:</span>
+                        <span class="score-badge">{{ evaluation.responsibility|default:"-" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kerjasama -->
+            <h6 class="text-primary mb-3"><i class="fas fa-users me-2"></i>Kerjasama</h6>
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="score-item">
+                        <span>Kerja Tim:</span>
+                        <span class="score-badge">{{ evaluation.teamwork|default:"-" }}</span>
+                    </div>
+                    <div class="score-item">
+                        <span>Kontribusi Diskusi:</span>
+                        <span class="score-badge">{{ evaluation.discussion_contribution|default:"-" }}</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="score-item">
+                        <span>Menghargai Pendapat:</span>
+                        <span class="score-badge">{{ evaluation.respect_opinions|default:"-" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Komunikasi -->
+            <h6 class="text-primary mb-3"><i class="fas fa-comments me-2"></i>Komunikasi</h6>
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="score-item">
+                        <span>Komunikasi Verbal:</span>
+                        <span class="score-badge">{{ evaluation.verbal_communication|default:"-" }}</span>
+                    </div>
+                    <div class="score-item">
+                        <span>Komunikasi Tertulis:</span>
+                        <span class="score-badge">{{ evaluation.written_communication|default:"-" }}</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="score-item">
+                        <span>Presentasi:</span>
+                        <span class="score-badge">{{ evaluation.presentation_skills|default:"-" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sikap Profesional -->
+            <h6 class="text-primary mb-3"><i class="fas fa-user-tie me-2"></i>Sikap Profesional</h6>
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="score-item">
+                        <span>Penampilan:</span>
+                        <span class="score-badge">{{ evaluation.appearance|default:"-" }}</span>
+                    </div>
+                    <div class="score-item">
+                        <span>Etika dan Sopan Santun:</span>
+                        <span class="score-badge">{{ evaluation.ethics|default:"-" }}</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="score-item">
+                        <span>Menerima Kritik:</span>
+                        <span class="score-badge">{{ evaluation.accept_criticism|default:"-" }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Evaluasi Deskriptif -->
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h5 class="mb-0"><i class="fas fa-file-alt me-2"></i>Evaluasi Deskriptif</h5>
+        </div>
+        <div class="card-body">
+            <div class="mb-4">
+                <h6 class="text-primary">Pencapaian Selama Magang:</h6>
+                <p class="text-justify">{{ evaluation.achievements_description|default:"Tidak ada data"|linebreaks }}</p>
+            </div>
+            <div class="mb-4">
+                <h6 class="text-primary">Kekuatan Mahasiswa:</h6>
+                <p class="text-justify">{{ evaluation.strengths|default:"Tidak ada data"|linebreaks }}</p>
+            </div>
+            <div class="mb-4">
+                <h6 class="text-primary">Area yang Perlu Diperbaiki:</h6>
+                <p class="text-justify">{{ evaluation.improvements_needed|default:"Tidak ada data"|linebreaks }}</p>
+            </div>
+            <div class="mb-4">
+                <h6 class="text-primary">Rekomendasi Karir:</h6>
+                <p class="text-justify">{{ evaluation.career_recommendation|default:"Tidak ada data"|linebreaks }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rekomendasi -->
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h5 class="mb-0"><i class="fas fa-check-circle me-2"></i>Rekomendasi</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="recommendation-item">
+                        <i class="fas fa-graduation-cap me-2"></i>
+                        <strong>Rekomendasi Kelulusan:</strong>
+                        {% if evaluation.pass_recommendation %}
+                            <span class="badge bg-success">Ya, Direkomendasikan</span>
+                        {% else %}
+                            <span class="badge bg-danger">Tidak Direkomendasikan</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="recommendation-item">
+                        <i class="fas fa-redo me-2"></i>
+                        <strong>Bersedia Terima Mahasiswa Lagi:</strong>
+                        {% if evaluation.rehire_willingness %}
+                            <span class="badge bg-success">Ya</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Tidak</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.score-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem;
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 0.5rem;
+}
+
+.score-item:last-child {
+    border-bottom: none;
+}
+
+.score-badge {
+    font-weight: bold;
+    color: #0d6efd;
+    background-color: #e7f1ff;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+}
+
+.recommendation-item {
+    padding: 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+.text-justify {
+    text-align: justify;
+    white-space: pre-line;
+}
+
+.progress-bar {
+    background-color: #0d6efd;
+    transition: width 0.6s ease;
+}
+</style>
+{% endblock %}

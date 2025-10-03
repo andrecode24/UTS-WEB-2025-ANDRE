@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block title %}Konfirmasi Magang - COOP Prasetiya Mulya{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2><i class="fas fa-check me-2"></i>Konfirmasi Penerimaan Magang</h2>
+
+    <div class="card-pm mt-4">
+        <div class="card-body p-4">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                Isi form di bawah ini setelah Anda mendapatkan penerimaan magang. Data supervisor akan digunakan untuk
+                membuat akun supervisor.
+            </div>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <h5 class="mt-4">Informasi Perusahaan</h5>
+                <hr>
+                <div class="mb-3">
+                    {{ form.company_name.label_tag }}
+                    {{ form.company_name }}
+                    {% if form.company_name.errors %}
+                    <div class="text-danger">{{ form.company_name.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.company_address.label_tag }}
+                    {{ form.company_address }}
+                    {% if form.company_address.errors %}
+                    <div class="text-danger">{{ form.company_address.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.company_industry.label_tag }}
+                    {{ form.company_industry }}
+                    {% if form.company_industry.errors %}
+                    <div class="text-danger">{{ form.company_industry.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <h5 class="mt-4">Detail Posisi & Periode</h5>
+                <hr>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        {{ form.position.label_tag }}
+                        {{ form.position }}
+                        {% if form.position.errors %}
+                        <div class="text-danger">{{ form.position.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.start_date.label_tag }}
+                        {{ form.start_date }}
+                        {% if form.start_date.errors %}
+                        <div class="text-danger">{{ form.start_date.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.end_date.label_tag }}
+                        {{ form.end_date }}
+                        {% if form.end_date.errors %}
+                        <div class="text-danger">{{ form.end_date.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <h5 class="mt-4">Informasi Supervisor</h5>
+                <hr>
+                <div class="mb-3">
+                    {{ form.supervisor_name.label_tag }}
+                    {{ form.supervisor_name }}
+                    {% if form.supervisor_name.errors %}
+                    <div class="text-danger">{{ form.supervisor_name.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.supervisor_position.label_tag }}
+                    {{ form.supervisor_position }}
+                    {% if form.supervisor_position.errors %}
+                    <div class="text-danger">{{ form.supervisor_position.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.supervisor_email.label_tag }}
+                        {{ form.supervisor_email }}
+                        {% if form.supervisor_email.errors %}
+                        <div class="text-danger">{{ form.supervisor_email.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.supervisor_whatsapp.label_tag }}
+                        {{ form.supervisor_whatsapp }}
+                        {% if form.supervisor_whatsapp.errors %}
+                        <div class="text-danger">{{ form.supervisor_whatsapp.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <h5 class="mt-4">Dokumen</h5>
+                <hr>
+                <div class="mb-3">
+                    {{ form.acceptance_letter.label_tag }}
+                    {{ form.acceptance_letter }}
+                    {% if form.acceptance_letter.errors %}
+                    <div class="text-danger">{{ form.acceptance_letter.errors }}</div>
+                    {% endif %}
+                    <small class="text-muted">File PDF, maksimal 5MB</small>
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-pm-success btn-lg">
+                        <i class="fas fa-check me-2"></i>Submit Konfirmasi
+                    </button>
+                    <a href="{% url 'student:dashboard' %}" class="btn btn-outline-secondary">
+                        Batal
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

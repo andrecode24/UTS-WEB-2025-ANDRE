@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - COOP Prasetiya Mulya{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-home me-2"></i>Dashboard Mahasiswa</h2>
+        <span class="badge badge-pm-{{ student.status|lower }}">{{ student.get_status_display }}</span>
+    </div>
+
+    {% if student.status == 'PENDING' %}
+    <div class="alert alert-warning">
+        <i class="fas fa-clock me-2"></i>
+        <strong>Menunggu Persetujuan</strong><br>
+        Akun Anda sedang dalam proses verifikasi oleh admin COOP.
+    </div>
+    {% elif student.status == 'AT_RISK' %}
+    <div class="alert alert-danger">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <strong>Status At-Risk!</strong><br>
+        Anda belum memiliki magang > 2 bulan. Segera cari magang atau hubungi admin COOP.
+    </div>
+    {% endif %}
+
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="stat-widget">
+                <h3>Program Studi</h3>
+                <div class="stat-value">{{ student.get_program_display }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-widget success">
+                <h3>IPK</h3>
+                <div class="stat-value">{{ student.ipk|default:"N/A" }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-widget">
+                <h3>Aplikasi</h3>
+                <div class="stat-value">{{ applications|length }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-widget {% if active_placement %}success{% else %}warning{% endif %}">
+                <h3>Status Magang</h3>
+                <div class="stat-value">
+                    {% if active_placement %}Aktif{% else %}Belum Ada{% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if active_placement %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card-pm">
+                <div class="card-header-pm">
+                    <i class="fas fa-briefcase me-2"></i>Magang Aktif
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>{{ active_placement.company_name }}</h5>
+                            <p class="text-muted mb-2">
+                                <i class="fas fa-user-tie me-1"></i>{{ active_placement.position }}
+                            </p>
+                            <p class="text-muted mb-2">
+                                <i class="fas fa-map-marker-alt me-1"></i>{{ active_placement.company_address }}
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Supervisor:</strong> {{ active_placement.supervisor_name }}</p>
+                            <p>
+                                <strong>Periode:</strong>
+                                {{ active_placement.start_date }} - {{ active_placement.end_date }}
+                            </p>
+                            <a href="{% url 'student:reports' %}" class="btn btn-pm-primary btn-sm mt-2">
+                                <i class="fas fa-file-alt me-1"></i>Lihat Laporan
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card-pm">
+                <div class="card-header-pm">
+                    <i class="fas fa-paper-plane me-2"></i>Aplikasi Terbaru
+                </div>
+                <div class="card-body">
+                    {% if applications %}
+                    <div class="list-group list-group-flush">
+                        {% for app in applications %}
+                        <div class="list-group-item px-0">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="mb-1">{{ app.job_posting.title }}</h6>
+                                    <small class="text-muted">{{ app.job_posting.company.name }}</small>
+                                </div>
+                                <span class="badge bg-{{ app.status|lower }}">{{ app.get_status_display }}</span>
+                            </div>
+                            <small class="text-muted">{{ app.applied_at|date:"d M Y" }}</small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <a href="{% url 'student:applications' %}" class="btn btn-sm btn-outline-primary mt-3">
+                        Lihat Semua Aplikasi <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                    {% else %}
+                    <p class="text-muted text-center py-3">
+                        Belum ada aplikasi.<br>
+                        <a href="{% url 'student:job_list' %}">Browse lowongan sekarang</a>
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card-pm">
+                <div class="card-header-pm">
+                    <i class="fas fa-briefcase me-2"></i>Lowongan Tersedia
+                </div>
+                <div class="card-body">
+                    {% if available_jobs %}
+                    <div class="list-group list-group-flush">
+                        {% for job in available_jobs %}
+                        <div class="list-group-item px-0">
+                            <h6 class="mb-1">{{ job.title }}</h6>
+                            <small class="text-muted">{{ job.company.name }} - {{ job.location }}</small><br>
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>{{ job.duration_months }} bulan
+                                <span class="ms-2"><i class="fas fa-users me-1"></i>{{ job.slots_available }}
+                                    posisi</span>
+                            </small>
+                            <div class="mt-2">
+                                <a href="{% url 'student:job_detail' job.id %}" class="btn btn-sm btn-pm-primary">
+                                    Lihat Detail
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <a href="{% url 'student:job_list' %}" class="btn btn-sm btn-outline-primary mt-3">
+                        Lihat Semua Lowongan <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                    {% else %}
+                    <p class="text-muted text-center py-3">Tidak ada lowongan tersedia saat ini.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-pm">
+        <div class="card-header-pm">
+            <i class="fas fa-bolt me-2"></i>Quick Actions
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3 mb-2">
+                    <a href="{% url 'student:job_list' %}" class="btn btn-outline-primary w-100">
+                        <i class="fas fa-search me-1"></i>Cari Lowongan
+                    </a>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <a href="{% url 'student:profile' %}" class="btn btn-outline-primary w-100">
+                        <i class="fas fa-user me-1"></i>Edit Profil
+                    </a>
+                </div>
+                {% if active_placement %}
+                <div class="col-md-3 mb-2">
+                    <a href="{% url 'student:reports' %}" class="btn btn-outline-success w-100">
+                        <i class="fas fa-file-alt me-1"></i>Submit Laporan
+                    </a>
+                </div>
+                {% else %}
+                <div class="col-md-3 mb-2">
+                    <a href="{% url 'student:confirm_internship' %}" class="btn btn-outline-success w-100">
+                        <i class="fas fa-check me-1"></i>Konfirmasi Magang
+                    </a>
+                </div>
+                {% endif %}
+                <div class="col-md-3 mb-2">
+                    <a href="{% url 'student:applications' %}" class="btn btn-outline-primary w-100">
+                        <i class="fas fa-paper-plane me-1"></i>Aplikasi Saya
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

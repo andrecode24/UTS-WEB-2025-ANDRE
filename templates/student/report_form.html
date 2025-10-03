@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+{% block title %}
+{% if report %}Edit Laporan{% else %}Buat Laporan Baru{% endif %} - COOP Prasetiya Mulya
+{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+            <i class="fas fa-file-alt me-2"></i>
+            {% if report %}
+            Edit Laporan Bulan {{ report.get_month_display }} {{ report.year }}
+            {% else %}
+            Buat Laporan Bulan {{ month }} Tahun {{ year }}
+            {% endif %}
+        </h2>
+        <a href="{% url 'reports:student_reports' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Kembali
+        </a>
+    </div>
+
+    <div class="card-pm mb-4">
+        <div class="card-body">
+            <h5>Informasi Magang</h5>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <p><strong>Perusahaan:</strong> {{ placement.company_name }}</p>
+                    <p><strong>Posisi:</strong> {{ placement.position }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Periode:</strong> {{ placement.start_date }} - {{ placement.end_date }}</p>
+                    <p><strong>Supervisor:</strong> {{ placement.supervisor_name }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>
+        <strong>Catatan:</strong> Total laporan harus minimal 500 kata. Isi semua field dengan detail.
+    </div>
+
+    <form method="post" id="reportForm">
+        {% csrf_token %}
+
+        <div class="card-pm mb-3">
+            <div class="card-body">
+                <h5 class="card-title">1. Profil Perusahaan</h5>
+                <p class="text-muted small">Jelaskan tentang perusahaan tempat Anda magang</p>
+                {{ form.company_profile }}
+                {% if form.company_profile.errors %}
+                <div class="text-danger mt-1">{{ form.company_profile.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card-pm mb-3">
+            <div class="card-body">
+                <h5 class="card-title">2. Deskripsi Pekerjaan (Job Description)</h5>
+                <p class="text-muted small">Jelaskan tugas dan tanggung jawab Anda</p>
+                {{ form.job_description }}
+                {% if form.job_description.errors %}
+                <div class="text-danger mt-1">{{ form.job_description.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card-pm mb-3">
+            <div class="card-body">
+                <h5 class="card-title">3. Suasana Lingkungan Pekerjaan</h5>
+                <p class="text-muted small">Ceritakan tentang lingkungan kerja dan budaya perusahaan</p>
+                {{ form.work_environment }}
+                {% if form.work_environment.errors %}
+                <div class="text-danger mt-1">{{ form.work_environment.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card-pm mb-3">
+            <div class="card-body">
+                <h5 class="card-title">4. Apa yang Didapatkan dari Perkuliahan yang Berguna</h5>
+                <p class="text-muted small">Sebutkan ilmu/skill dari kampus yang berguna untuk pekerjaan</p>
+                {{ form.useful_skills }}
+                {% if form.useful_skills.errors %}
+                <div class="text-danger mt-1">{{ form.useful_skills.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card-pm mb-3">
+            <div class="card-body">
+                <h5 class="card-title">5. Apa yang Berguna di Perusahaan tapi Belum Didapatkan di Pembelajaran</h5>
+                <p class="text-muted small">Sebutkan skill/pengetahuan yang diperlukan tapi belum dipelajari di kampus
+                </p>
+                {{ form.needed_skills }}
+                {% if form.needed_skills.errors %}
+                <div class="text-danger mt-1">{{ form.needed_skills.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card-pm mb-3">
+            <div class="card-body">
+                <h5 class="card-title">6. Pencapaian Bulan Ini</h5>
+                <p class="text-muted small">Jelaskan pencapaian dan kontribusi Anda bulan ini</p>
+                {{ form.achievements }}
+                {% if form.achievements.errors %}
+                <div class="text-danger mt-1">{{ form.achievements.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card-pm mb-3">
+            <div class="card-body">
+                <h5 class="card-title">7. Tantangan yang Dihadapi</h5>
+                <p class="text-muted small">Jelaskan kesulitan atau tantangan yang dihadapi</p>
+                {{ form.challenges }}
+                {% if form.challenges.errors %}
+                <div class="text-danger mt-1">{{ form.challenges.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card-pm mb-3">
+            <div class="card-body">
+                <h5 class="card-title">8. Rencana Bulan Depan</h5>
+                <p class="text-muted small">Jelaskan rencana dan target untuk bulan depan</p>
+                {{ form.next_month_plan }}
+                {% if form.next_month_plan.errors %}
+                <div class="text-danger mt-1">{{ form.next_month_plan.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="alert alert-secondary">
+            <i class="fas fa-calculator me-2"></i>
+            Total kata: <strong id="wordCount">0</strong> / 500 kata minimum
+        </div>
+
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        <div class="d-flex gap-2 mt-4">
+            <button type="submit" name="action" value="draft" class="btn btn-secondary">
+                <i class="fas fa-save me-1"></i>Simpan sebagai Draft
+            </button>
+            <button type="submit" name="action" value="submit" class="btn btn-pm-success">
+                <i class="fas fa-paper-plane me-1"></i>Submit Laporan
+            </button>
+            <a href="{% url 'reports:student_reports' %}" class="btn btn-outline-secondary">
+                Batal
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Word counter
+    function countWords() {
+        let total = 0;
+        const textareas = document.querySelectorAll('textarea');
+        textareas.forEach(textarea => {
+            const text = textarea.value.trim();
+            if (text) {
+                total += text.split(/\s+/).length;
+            }
+        });
+        document.getElementById('wordCount').textContent = total;
+
+        // Change color based on count
+        const wordCountEl = document.getElementById('wordCount');
+        if (total >= 500) {
+            wordCountEl.style.color = 'green';
+        } else {
+            wordCountEl.style.color = 'red';
+        }
+    }
+
+    // Update word count on input
+    document.querySelectorAll('textarea').forEach(textarea => {
+        textarea.addEventListener('input', countWords);
+    });
+
+    // Initial count
+    countWords();
+</script>
+{% endblock %}

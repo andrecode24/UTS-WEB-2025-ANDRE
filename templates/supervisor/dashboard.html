@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard Supervisor - COOP Prasetiya Mulya{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2><i class="fas fa-home me-2"></i>Dashboard Supervisor</h2>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="stat-widget">
+                <h3>Mahasiswa Dibimbing</h3>
+                <div class="stat-value">{{ students|length }}</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="stat-widget warning">
+                <h3>Evaluasi Pending</h3>
+                <div class="stat-value">{{ pending_evaluations }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-pm mt-4">
+        <div class="card-header-pm">Mahasiswa Magang</div>
+        <div class="card-body">
+            {% if students %}
+            <div class="list-group">
+                {% for placement in students %}
+                <div class="list-group-item">
+                    <h6>{{ placement.student.full_name }}</h6>
+                    <p class="text-muted mb-0">{{ placement.student.nim }} - {{ placement.position }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted text-center">Belum ada mahasiswa yang dibimbing.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

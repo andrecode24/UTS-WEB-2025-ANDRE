@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block title %}{{ job.title }} - COOP Prasetiya Mulya{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <a href="{% url 'student:job_list' %}" class="btn btn-outline-secondary mb-3">
+        <i class="fas fa-arrow-left me-1"></i>Kembali
+    </a>
+
+    <div class="card-pm">
+        <div class="card-body p-4">
+            <h2>{{ job.title }}</h2>
+            <h5 class="text-muted">{{ job.company.name }}</h5>
+
+            <div class="my-4">
+                <p><i class="fas fa-map-marker-alt me-2"></i>{{ job.location }}</p>
+                <p><i class="fas fa-laptop-house me-2"></i>{{ job.get_work_type_display }}</p>
+                <p><i class="fas fa-clock me-2"></i>{{ job.duration_months }} bulan</p>
+                <p><i class="fas fa-users me-2"></i>{{ job.slots_available }} posisi tersedia</p>
+                <p><i class="fas fa-calendar me-2"></i>Deadline: {{ job.application_deadline }}</p>
+            </div>
+
+            <h5>Deskripsi</h5>
+            <p>{{ job.description|linebreaks }}</p>
+
+            <h5>Requirements</h5>
+            <p>{{ job.requirements|linebreaks }}</p>
+
+            {% if job.benefits %}
+            <h5>Benefits</h5>
+            <p>{{ job.benefits|linebreaks }}</p>
+            {% endif %}
+
+            {% if existing_application %}
+            <div class="alert alert-info mt-4">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong>Anda sudah apply untuk posisi ini</strong>
+                <br>
+                Status:
+                <span class="badge bg-primary">
+                    {{ existing_application.get_status_display }}
+                </span>
+                <br>
+                Tanggal apply: {{ existing_application.applied_at|date:"d M Y" }}
+            </div>
+            {% else %}
+            <div class="mt-4">
+                <button type="button" class="btn btn-pm-primary btn-lg" data-bs-toggle="modal"
+                    data-bs-target="#applyModal">
+                    <i class="fas fa-paper-plane me-2"></i>Apply Sekarang
+                </button>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Application Modal -->
+    {% if not existing_application %}
+    <div class="modal fade" id="applyModal" tabindex="-1" aria-labelledby="applyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="applyModalLabel">Apply untuk {{ job.title }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="{{ form.cover_letter.id_for_label }}" class="form-label">
+                                {{ form.cover_letter.label }}
+                            </label>
+                            {{ form.cover_letter }}
+                            {% if form.cover_letter.errors %}
+                            <div class="text-danger">{{ form.cover_letter.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.cv.id_for_label }}" class="form-label">{{ form.cv.label }}</label>
+                            {{ form.cv }}
+                            {% if form.cv.errors %}
+                            <div class="text-danger">{{ form.cv.errors }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">Upload CV Anda (PDF, maksimal 5MB)</small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-pm-primary">
+                            <i class="fas fa-paper-plane me-1"></i>Kirim Aplikasi
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

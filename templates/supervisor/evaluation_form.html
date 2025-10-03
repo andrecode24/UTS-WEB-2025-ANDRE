@@ -1,0 +1,382 @@
+{% extends 'base.html' %}
+{% block title %}Form Evaluasi - COOP Prasetiya Mulya{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="mb-4">
+        <a href="{% url 'supervisor:evaluations' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-arrow-left me-1"></i>Kembali
+        </a>
+    </div>
+
+    <h2 class="mb-4"><i class="fas fa-edit me-2"></i>Form Evaluasi {{ evaluation.get_evaluation_type_display }}</h2>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="fas fa-user me-2"></i>Informasi Mahasiswa</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Nama:</strong> {{ student.full_name }}</p>
+                    <p><strong>NIM:</strong> {{ student.nim }}</p>
+                    <p><strong>Program Studi:</strong> {{ student.get_program_display }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Perusahaan:</strong> {{ placement.company_name }}</p>
+                    <p><strong>Posisi:</strong> {{ placement.position }}</p>
+                    <p><strong>Periode:</strong> {{ placement.start_date|date:"d M Y" }} - {{ placement.end_date|date:"d M Y" }}</p>
+                </div>
+            </div>
+            <div class="alert alert-info mt-3 mb-0">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>Deadline Evaluasi:</strong> {{ evaluation.deadline|date:"d F Y" }}
+                {% if evaluation.deadline < today %}
+                    <span class="badge bg-danger ms-2">Overdue</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <form method="post" id="evaluationForm">
+        {% csrf_token %}
+
+        <div class="alert alert-warning mb-4">
+            <h6><i class="fas fa-exclamation-triangle me-2"></i>Petunjuk Pengisian:</h6>
+            <ul class="mb-0">
+                <li>Berikan penilaian dengan skala 1-5 untuk setiap kriteria (1 = Sangat Kurang, 5 = Sangat Baik)</li>
+                <li>Isi semua kriteria untuk perhitungan rating otomatis</li>
+                <li>Anda dapat menyimpan sebagai draft dan melanjutkan nanti</li>
+                <li>Setelah submit, evaluasi tidak dapat diubah</li>
+            </ul>
+        </div>
+
+        <!-- Category 1: Kualitas Kerja -->
+        <div class="card mb-4 category-card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="fas fa-star me-2"></i>1. Kualitas Kerja</h5>
+            </div>
+            <div class="card-body">
+                {% for field in form %}
+                    {% if field.name in 'accuracy,neatness,task_completion,creativity' %}
+                        <div class="mb-4 criteria-item">
+                            <label class="form-label fw-bold">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="text-danger small">{{ field.errors }}</div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Category 2: Produktivitas -->
+        <div class="card mb-4 category-card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>2. Produktivitas</h5>
+            </div>
+            <div class="card-body">
+                {% for field in form %}
+                    {% if field.name in 'work_quantity,work_speed,consistency' %}
+                        <div class="mb-4 criteria-item">
+                            <label class="form-label fw-bold">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="text-danger small">{{ field.errors }}</div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Category 3: Pengetahuan -->
+        <div class="card mb-4 category-card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="fas fa-brain me-2"></i>3. Pengetahuan</h5>
+            </div>
+            <div class="card-body">
+                {% for field in form %}
+                    {% if field.name in 'task_understanding,technical_skills,theory_application,learning_willingness' %}
+                        <div class="mb-4 criteria-item">
+                            <label class="form-label fw-bold">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="text-danger small">{{ field.errors }}</div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Category 4: Kedisiplinan -->
+        <div class="card mb-4 category-card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="fas fa-clock me-2"></i>4. Kedisiplinan</h5>
+            </div>
+            <div class="card-body">
+                {% for field in form %}
+                    {% if field.name in 'punctuality,rule_compliance,responsibility' %}
+                        <div class="mb-4 criteria-item">
+                            <label class="form-label fw-bold">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="text-danger small">{{ field.errors }}</div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Category 5: Kerjasama -->
+        <div class="card mb-4 category-card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="fas fa-users me-2"></i>5. Kerjasama</h5>
+            </div>
+            <div class="card-body">
+                {% for field in form %}
+                    {% if field.name in 'teamwork,discussion_contribution,respect_opinions' %}
+                        <div class="mb-4 criteria-item">
+                            <label class="form-label fw-bold">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="text-danger small">{{ field.errors }}</div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Category 6: Komunikasi -->
+        <div class="card mb-4 category-card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="fas fa-comments me-2"></i>6. Komunikasi</h5>
+            </div>
+            <div class="card-body">
+                {% for field in form %}
+                    {% if field.name in 'verbal_communication,written_communication,presentation_skills' %}
+                        <div class="mb-4 criteria-item">
+                            <label class="form-label fw-bold">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="text-danger small">{{ field.errors }}</div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Category 7: Sikap Profesional -->
+        <div class="card mb-4 category-card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="fas fa-user-tie me-2"></i>7. Sikap Profesional</h5>
+            </div>
+            <div class="card-body">
+                {% for field in form %}
+                    {% if field.name in 'appearance,ethics,accept_criticism' %}
+                        <div class="mb-4 criteria-item">
+                            <label class="form-label fw-bold">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="text-danger small">{{ field.errors }}</div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Category 8: Evaluasi Deskriptif -->
+        <div class="card mb-4 category-card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="fas fa-file-alt me-2"></i>8. Evaluasi Deskriptif</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">{{ form.achievements_description.label }}</label>
+                    {{ form.achievements_description }}
+                    {% if form.achievements_description.errors %}
+                        <div class="text-danger small">{{ form.achievements_description.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">{{ form.strengths.label }}</label>
+                    {{ form.strengths }}
+                    {% if form.strengths.errors %}
+                        <div class="text-danger small">{{ form.strengths.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">{{ form.improvements_needed.label }}</label>
+                    {{ form.improvements_needed }}
+                    {% if form.improvements_needed.errors %}
+                        <div class="text-danger small">{{ form.improvements_needed.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">{{ form.career_recommendation.label }}</label>
+                    {{ form.career_recommendation }}
+                    {% if form.career_recommendation.errors %}
+                        <div class="text-danger small">{{ form.career_recommendation.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Category 9: Rekomendasi Akhir -->
+        <div class="card mb-4 category-card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="fas fa-check-circle me-2"></i>9. Rekomendasi Akhir</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3 form-check">
+                    {{ form.pass_recommendation }}
+                    <label class="form-check-label fw-bold" for="{{ form.pass_recommendation.id_for_label }}">
+                        {{ form.pass_recommendation.label }}
+                    </label>
+                </div>
+                <div class="mb-3 form-check">
+                    {{ form.rehire_willingness }}
+                    <label class="form-check-label fw-bold" for="{{ form.rehire_willingness.id_for_label }}">
+                        {{ form.rehire_willingness.label }}
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <button type="submit" name="action" value="draft" class="btn btn-secondary">
+                            <i class="fas fa-save me-2"></i>Simpan sebagai Draft
+                        </button>
+                        <button type="submit" name="action" value="submit" class="btn btn-success"
+                                onclick="return confirm('Apakah Anda yakin ingin submit evaluasi ini? Setelah submit, evaluasi tidak dapat diubah.')">
+                            <i class="fas fa-paper-plane me-2"></i>Submit Evaluasi
+                        </button>
+                    </div>
+                    <a href="{% url 'supervisor:evaluations' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-times me-2"></i>Batal
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+.category-card {
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.category-card .card-header {
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.criteria-item {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.criteria-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+/* Horizontal Rating Group - Bootstrap inline style */
+.form-check-inline {
+    display: inline-flex !important;
+    margin-right: 0.5rem;
+}
+
+.form-check-inline ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.form-check-inline li {
+    display: inline-block;
+}
+
+.form-check-inline label {
+    cursor: pointer;
+    padding: 0.5rem 1.25rem;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    min-width: 50px;
+    text-align: center;
+    background-color: white;
+    display: inline-block;
+    margin-bottom: 0;
+}
+
+.form-check-inline input[type="radio"] {
+    display: none;
+}
+
+.form-check-inline input[type="radio"]:checked + label {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+}
+
+.form-check-inline label:hover {
+    background-color: #f0f0f0;
+    border-color: #0d6efd;
+}
+
+.form-check-inline input[type="radio"]:checked + label:hover {
+    background-color: #0b5ed7;
+}
+
+/* Legend */
+.rating-legend {
+    background-color: #f8f9fa;
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.rating-legend span {
+    margin-right: 1rem;
+}
+
+textarea.form-control {
+    min-height: 100px;
+}
+</style>
+
+<script>
+// Add rating legend after page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Add legend to first category
+    const firstCategory = document.querySelector('.category-card .card-body');
+    if (firstCategory) {
+        const legend = document.createElement('div');
+        legend.className = 'rating-legend mb-3';
+        legend.innerHTML = '<strong>Skala Penilaian:</strong> ' +
+            '<span>1 = Sangat Kurang</span>' +
+            '<span>2 = Kurang</span>' +
+            '<span>3 = Cukup</span>' +
+            '<span>4 = Baik</span>' +
+            '<span>5 = Sangat Baik</span>';
+        firstCategory.insertBefore(legend, firstCategory.firstChild);
+    }
+});
+</script>
+{% endblock %}

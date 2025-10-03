@@ -1,0 +1,235 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home - COOP Prasetiya Mulya{% endblock %}
+
+{% block content %}
+<section class="hero-modern">
+    <div class="container">
+        <div class="row align-items-center min-vh-75">
+            <div class="col-lg-6 text-white">
+                <div class="hero-content">
+                    <h1 class="display-3 fw-bold mb-4">
+                        Program <span class="text-highlight">COOP</span><br>
+                        Prasetiya Mulya
+                    </h1>
+                    <p class="lead mb-4">
+                        Platform digital untuk mengelola program Co-operative Education.
+                        Temukan magang impian, submit laporan online, dan monitor progress Anda dengan mudah.
+                    </p>
+                    {% if not user.is_authenticated %}
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a href="{% url 'student:register' %}" class="btn btn-light btn-lg px-4 py-3">
+                            <i class="fas fa-rocket me-2"></i>Mulai Sekarang
+                        </a>
+                        <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg px-4 py-3">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                        </a>
+                    </div>
+                    {% else %}
+                    <div>
+                        <a href="{% if user.role == 'STUDENT' %}{% url 'student:dashboard' %}{% elif user.role == 'SUPERVISOR' %}{% url 'supervisor:dashboard' %}{% else %}/admin/{% endif %}"
+                            class="btn btn-light btn-lg px-4 py-3">
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-illustration">
+                    <div class="floating-card card-1">
+                        <i class="fas fa-briefcase fa-3x text-primary mb-3"></i>
+                        <h5>200+</h5>
+                        <p class="text-muted mb-0">Lowongan Aktif</p>
+                    </div>
+                    <div class="floating-card card-2">
+                        <i class="fas fa-users fa-3x text-success mb-3"></i>
+                        <h5>500+</h5>
+                        <p class="text-muted mb-0">Mahasiswa Aktif</p>
+                    </div>
+                    <div class="floating-card card-3">
+                        <i class="fas fa-building fa-3x text-info mb-3"></i>
+                        <h5>100+</h5>
+                        <p class="text-muted mb-0">Perusahaan Partner</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-light">
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold mb-3">Fitur Unggulan</h2>
+            <p class="lead text-muted">Kelola program magang Anda dengan mudah dan efisien</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-box text-center">
+                    <div class="feature-icon-wrapper mb-3">
+                        <i class="fas fa-search fa-3x"></i>
+                    </div>
+                    <h5 class="mb-3">Cari Magang</h5>
+                    <p class="text-muted">Temukan lowongan magang dari berbagai perusahaan terkemuka</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-box text-center">
+                    <div class="feature-icon-wrapper mb-3">
+                        <i class="fas fa-file-alt fa-3x"></i>
+                    </div>
+                    <h5 class="mb-3">Laporan Online</h5>
+                    <p class="text-muted">Submit laporan kemajuan bulanan secara digital</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-box text-center">
+                    <div class="feature-icon-wrapper mb-3">
+                        <i class="fas fa-chart-line fa-3x"></i>
+                    </div>
+                    <h5 class="mb-3">Tracking Progress</h5>
+                    <p class="text-muted">Monitor perkembangan magang secara real-time</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-box text-center">
+                    <div class="feature-icon-wrapper mb-3">
+                        <i class="fas fa-star fa-3x"></i>
+                    </div>
+                    <h5 class="mb-3">Evaluasi</h5>
+                    <p class="text-muted">Sistem evaluasi terintegrasi dengan supervisor</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold mb-3">Cara Kerja</h2>
+            <p class="lead text-muted">Mulai perjalanan magang Anda dalam 4 langkah mudah</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="step-box text-center">
+                    <div class="step-number mb-3">1</div>
+                    <h5 class="mb-3">Daftar Akun</h5>
+                    <p class="text-muted">Buat akun dengan email kampus Anda</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="step-box text-center">
+                    <div class="step-number mb-3">2</div>
+                    <h5 class="mb-3">Cari Lowongan</h5>
+                    <p class="text-muted">Browse dan apply ke lowongan yang tersedia</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="step-box text-center">
+                    <div class="step-number mb-3">3</div>
+                    <h5 class="mb-3">Konfirmasi Magang</h5>
+                    <p class="text-muted">Konfirmasi penerimaan magang Anda</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="step-box text-center">
+                    <div class="step-number mb-3">4</div>
+                    <h5 class="mb-3">Submit Laporan</h5>
+                    <p class="text-muted">Kirim laporan bulanan dan dapatkan evaluasi</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if featured_jobs %}
+<section class="py-5 bg-light">
+    <div class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h2 class="display-5 fw-bold mb-2">Lowongan Terbaru</h2>
+                <p class="lead text-muted">Peluang magang dari perusahaan terkemuka</p>
+            </div>
+            {% if user.is_authenticated and user.role == 'STUDENT' %}
+            <a href="{% url 'student:job_list' %}" class="btn btn-outline-primary">
+                Lihat Semua <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+            {% endif %}
+        </div>
+
+        <div class="row g-4">
+            {% for job in featured_jobs %}
+            <div class="col-md-6 col-lg-4">
+                <div class="job-card-modern h-100">
+                    <div class="job-header mb-3">
+                        <h5 class="mb-2">{{ job.title }}</h5>
+                        <p class="text-muted mb-0">
+                            <i class="fas fa-building me-1"></i>{{ job.company.name }}
+                        </p>
+                    </div>
+                    <div class="job-meta mb-3">
+                        <span class="meta-item">
+                            <i class="fas fa-map-marker-alt me-1"></i>{{ job.location }}
+                        </span>
+                        <span class="meta-item">
+                            <i class="fas fa-clock me-1"></i>{{ job.duration_months }} bulan
+                        </span>
+                    </div>
+                    <p class="text-muted mb-3">{{ job.description|truncatewords:15 }}</p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <div class="job-badges">
+                            <span class="badge bg-primary">{{ job.get_work_type_display }}</span>
+                            <span class="badge bg-success">{{ job.slots_available }} slot</span>
+                        </div>
+                        {% if user.is_authenticated and user.role == 'STUDENT' %}
+                        <a href="{% url 'student:job_detail' job.id %}" class="btn btn-sm btn-outline-primary">
+                            Detail <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                        {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-sm btn-outline-secondary">
+                            Login
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<section class="cta-modern py-5">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center text-white">
+                <h2 class="display-4 fw-bold mb-4">Siap Memulai Perjalanan Magang Anda?</h2>
+                <p class="lead mb-5">Bergabunglah dengan ratusan mahasiswa Prasetiya Mulya yang telah sukses mendapatkan
+                    pengalaman berharga melalui program COOP</p>
+                {% if not user.is_authenticated %}
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a href="{% url 'student:register' %}" class="btn btn-light btn-lg px-5 py-3">
+                        <i class="fas fa-rocket me-2"></i>Daftar Gratis
+                    </a>
+                    <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg px-5 py-3">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </a>
+                </div>
+                {% else %}
+                <div>
+                    <a href="{% if user.role == 'STUDENT' %}{% url 'student:dashboard' %}{% elif user.role == 'SUPERVISOR' %}{% url 'supervisor:dashboard' %}{% else %}/admin/{% endif %}"
+                        class="btn btn-light btn-lg px-5 py-3">
+                        <i class="fas fa-tachometer-alt me-2"></i>Ke Dashboard
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

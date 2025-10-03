@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Daftar Mahasiswa - COOP Prasetiya Mulya{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2><i class="fas fa-users me-2"></i>Mahasiswa Bimbingan</h2>
+
+    <div class="card-pm mt-4">
+        <div class="card-body">
+            {% if students %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>NIM</th>
+                            <th>Posisi</th>
+                            <th>Periode</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for placement in students %}
+                        <tr>
+                            <td>{{ placement.student.full_name }}</td>
+                            <td>{{ placement.student.nim }}</td>
+                            <td>{{ placement.position }}</td>
+                            <td>{{ placement.start_date }} - {{ placement.end_date }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted text-center py-4">Belum ada mahasiswa.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

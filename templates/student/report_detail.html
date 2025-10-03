@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block title %}Detail Laporan - COOP Prasetiya Mulya{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-file-alt me-2"></i>Detail Laporan Bulan {{ report.get_month_display }} {{ report.year }}
+        </h2>
+        <a href="{% url 'reports:student_reports' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Kembali
+        </a>
+    </div>
+
+    <!-- Status & Info -->
+    <div class="card-pm mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Informasi Laporan</h5>
+                    <p><strong>Status:</strong>
+                        {% if report.status == 'DRAFT' %}
+                        <span class="badge bg-secondary">Draft</span>
+                        {% elif report.status == 'SUBMITTED' %}
+                        <span class="badge bg-warning">Submitted</span>
+                        {% elif report.status == 'REVIEWED' %}
+                        <span class="badge bg-success">Reviewed</span>
+                        {% endif %}
+                    </p>
+                    <p><strong>Total Kata:</strong> {{ word_count }}</p>
+                    {% if report.submitted_at %}
+                    <p><strong>Tanggal Submit:</strong> {{ report.submitted_at|date:"d M Y, H:i" }}
+                        {% if report.is_late %}
+                        <span class="badge bg-danger ms-1">Terlambat</span>
+                        {% endif %}
+                    </p>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <h5>Informasi Magang</h5>
+                    <p><strong>Perusahaan:</strong> {{ report.placement.company_name }}</p>
+                    <p><strong>Posisi:</strong> {{ report.placement.position }}</p>
+                    <p><strong>Mahasiswa:</strong> {{ report.placement.student.full_name }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Content -->
+    <div class="card-pm mb-3">
+        <div class="card-body">
+            <h5 class="card-title">1. Profil Perusahaan</h5>
+            <p class="text-muted">{{ report.company_profile|linebreaks }}</p>
+        </div>
+    </div>
+
+    <div class="card-pm mb-3">
+        <div class="card-body">
+            <h5 class="card-title">2. Deskripsi Pekerjaan (Job Description)</h5>
+            <p class="text-muted">{{ report.job_description|linebreaks }}</p>
+        </div>
+    </div>
+
+    <div class="card-pm mb-3">
+        <div class="card-body">
+            <h5 class="card-title">3. Suasana Lingkungan Pekerjaan</h5>
+            <p class="text-muted">{{ report.work_environment|linebreaks }}</p>
+        </div>
+    </div>
+
+    <div class="card-pm mb-3">
+        <div class="card-body">
+            <h5 class="card-title">4. Apa yang Didapatkan dari Perkuliahan yang Berguna</h5>
+            <p class="text-muted">{{ report.useful_skills|linebreaks }}</p>
+        </div>
+    </div>
+
+    <div class="card-pm mb-3">
+        <div class="card-body">
+            <h5 class="card-title">5. Apa yang Berguna di Perusahaan tapi Belum Didapatkan di Pembelajaran</h5>
+            <p class="text-muted">{{ report.needed_skills|linebreaks }}</p>
+        </div>
+    </div>
+
+    <div class="card-pm mb-3">
+        <div class="card-body">
+            <h5 class="card-title">6. Pencapaian Bulan Ini</h5>
+            <p class="text-muted">{{ report.achievements|linebreaks }}</p>
+        </div>
+    </div>
+
+    <div class="card-pm mb-3">
+        <div class="card-body">
+            <h5 class="card-title">7. Tantangan yang Dihadapi</h5>
+            <p class="text-muted">{{ report.challenges|linebreaks }}</p>
+        </div>
+    </div>
+
+    <div class="card-pm mb-3">
+        <div class="card-body">
+            <h5 class="card-title">8. Rencana Bulan Depan</h5>
+            <p class="text-muted">{{ report.next_month_plan|linebreaks }}</p>
+        </div>
+    </div>
+
+    <!-- Feedback Section -->
+    {% if report.status == 'REVIEWED' and report.feedback %}
+    <div class="card border-success mb-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0"><i class="fas fa-comment-dots me-2"></i>Feedback Admin</h5>
+        </div>
+        <div class="card-body">
+            <p class="mb-2"><strong>Reviewed by:</strong> {{ report.reviewed_by.email }}</p>
+            <p class="mb-2"><strong>Tanggal Review:</strong> {{ report.reviewed_at|date:"d M Y, H:i" }}</p>
+            <hr>
+            <p>{{ report.feedback|linebreaks }}</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Action Buttons -->
+    <div class="d-flex gap-2 mt-4">
+        {% if report.status != 'REVIEWED' and request.user.role == 'STUDENT' %}
+        <a href="{% url 'reports:edit_report' report.id %}" class="btn btn-pm-primary">
+            <i class="fas fa-edit me-1"></i>Edit Laporan
+        </a>
+        {% endif %}
+        <a href="{% url 'reports:student_reports' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Kembali ke Daftar
+        </a>
+    </div>
+</div>
+{% endblock %}

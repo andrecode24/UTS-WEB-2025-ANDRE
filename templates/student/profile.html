@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Profil - COOP Prasetiya Mulya{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-user me-2"></i>Profil Mahasiswa</h2>
+        <a href="{% url 'student:edit_profile' %}" class="btn btn-pm-primary">
+            <i class="fas fa-edit me-1"></i>Edit Profil
+        </a>
+    </div>
+
+    <div class="card-pm mt-4">
+        <div class="card-header-pm">Data Diri</div>
+        <div class="card-body">
+            <p><strong>Nama:</strong> {{ student.full_name }}</p>
+            <p><strong>NIM:</strong> {{ student.nim }}</p>
+            <p><strong>Program Studi:</strong> {{ student.get_program_display }}</p>
+            <p><strong>Angkatan:</strong> {{ student.angkatan }}</p>
+            <p><strong>Email:</strong> {{ student.user.email }}</p>
+            <p><strong>WhatsApp:</strong> {{ student.whatsapp }}</p>
+        </div>
+    </div>
+
+    <div class="card-pm mt-4">
+        <div class="card-header-pm">Kompetensi</div>
+        <div class="card-body">
+            <p><strong>IPK:</strong> {{ student.ipk|default:"Belum diisi" }}</p>
+            <p><strong>Skills:</strong> {{ student.skills|default:"Belum diisi" }}</p>
+            <p><strong>LinkedIn:</strong>
+                {% if student.linkedin_url %}
+                <a href="{{ student.linkedin_url }}" target="_blank">{{ student.linkedin_url }}</a>
+                {% else %}
+                Belum diisi
+                {% endif %}
+            </p>
+            <p><strong>GitHub:</strong>
+                {% if student.github_url %}
+                <a href="{{ student.github_url }}" target="_blank">{{ student.github_url }}</a>
+                {% else %}
+                Belum diisi
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    <div class="card-pm mt-4">
+        <div class="card-header-pm">Dokumen</div>
+        <div class="card-body">
+            <p><strong>CV:</strong>
+                {% if student.cv %}
+                <a href="{{ student.cv.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-download me-1"></i>Download CV
+                </a>
+                {% else %}
+                <span class="text-muted">Belum diupload</span>
+                {% endif %}
+            </p>
+            <p><strong>Portfolio:</strong>
+                {% if student.portfolio %}
+                <a href="{{ student.portfolio.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-download me-1"></i>Download Portfolio
+                </a>
+                {% else %}
+                <span class="text-muted">Belum diupload</span>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Registrasi Mahasiswa - COOP Prasetiya Mulya{% endblock %}
+
+{% block content %}
+<div class="container px-3" style="padding-top: 2rem; padding-bottom: 2rem; min-height: 70vh;">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 col-xl-8">
+            <div class="card-pm">
+                <div class="card-body" style="padding: 1.5rem;">
+                    <style>
+                        @media (min-width: 768px) {
+                            .card-pm .card-body {
+                                padding: 2.5rem !important;
+                            }
+                        }
+                    </style>
+                    <h4 class="text-center mb-1">Buat Akun Baru</h4>
+                    <p class="text-center text-muted mb-4">Lengkapi data diri Anda untuk mendaftar</p>
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="full_name" class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="full_name" name="full_name"
+                                       placeholder="Masukkan nama lengkap" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="nim" class="form-label">NIM <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="nim" name="nim"
+                                       pattern="[0-9]{8}" maxlength="8" placeholder="12345678" required>
+                                <small class="text-muted">8 digit angka</small>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="program" class="form-label">Program Studi <span class="text-danger">*</span></label>
+                                <select class="form-select" id="program" name="program" required>
+                                    <option value="">Pilih Program Studi</option>
+                                    <optgroup label="Sekolah Bisnis & Ekonomi">
+                                        <option value="MN">S1 Manajemen</option>
+                                        <option value="BP">S1 Bisnis Pariwisata</option>
+                                        <option value="AK">S1 Akuntansi</option>
+                                        <option value="EB">S1 Ekonomi Bisnis</option>
+                                    </optgroup>
+                                    <optgroup label="Sekolah STEM">
+                                        <option value="CSE">S1 Computer Systems Engineering</option>
+                                        <option value="FBT">S1 Food Business Technology</option>
+                                        <option value="PDI">S1 Product Design Innovation</option>
+                                        <option value="DBT">S1 Digital Business Technology</option>
+                                        <option value="BM">S1 Business Mathematics</option>
+                                        <option value="EBT">S1 Energy Business Technology</option>
+                                    </optgroup>
+                                    <optgroup label="Sekolah Hukum & Studi Internasional">
+                                        <option value="HBI">S1 Hukum Bisnis Internasional</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="angkatan" class="form-label">Angkatan <span class="text-danger">*</span></label>
+                                <select class="form-select" id="angkatan" name="angkatan" required>
+                                    <option value="">Pilih Angkatan</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2025">2025</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Jenis Kelamin <span class="text-danger">*</span></label>
+                            <div class="d-flex gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="gender" id="gender_l" value="L" required>
+                                    <label class="form-check-label" for="gender_l">
+                                        <i class="fas fa-mars me-1"></i>Laki-laki
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="gender" id="gender_p" value="P" required>
+                                    <label class="form-check-label" for="gender_p">
+                                        <i class="fas fa-venus me-1"></i>Perempuan
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Email Outlook <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                       placeholder="nama.anda@student.prasetiyamulya.ac.id" required>
+                                <small class="text-muted">Gunakan email @student.prasetiyamulya.ac.id</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="whatsapp" class="form-label">WhatsApp <span class="text-danger">*</span></label>
+                                <input type="tel" class="form-control" id="whatsapp" name="whatsapp"
+                                       placeholder="08xxxxxxxxxx" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="konsultasi_mentor_doc" class="form-label">Bukti Konsultasi Mentor <span class="text-danger">*</span></label>
+                                <input type="file" class="form-control" id="konsultasi_mentor_doc"
+                                       name="konsultasi_mentor_doc" accept=".pdf" required>
+                                <small class="text-muted">PDF, maksimal 5MB</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="sptjm_doc" class="form-label">Bukti SPTJM <span class="text-danger">*</span></label>
+                                <input type="file" class="form-control" id="sptjm_doc" name="sptjm_doc"
+                                       accept=".pdf" required>
+                                <small class="text-muted">Surat Pernyataan Tanggung Jawab Mutlak</small>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+                                <input type="password" class="form-control" id="password" name="password"
+                                       minlength="8" placeholder="Minimal 8 karakter" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="password_confirm" class="form-label">Konfirmasi Password <span class="text-danger">*</span></label>
+                                <input type="password" class="form-control" id="password_confirm"
+                                       name="password_confirm" minlength="8" placeholder="Ulangi password" required>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary w-100 mb-3">
+                                Daftar Sekarang
+                            </button>
+
+                            <div class="text-center">
+                                <small class="text-muted">
+                                    Sudah punya akun?
+                                    <a href="{% url 'login' %}" class="text-decoration-none">Login</a>
+                                </small>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
