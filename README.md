@@ -15,7 +15,7 @@ Platform digital untuk mengelola program magang mahasiswa Universitas Prasetiya 
 
 * **Django 5.2.7** – Backend framework dengan Python
 * **Bootstrap 5** – Responsive UI framework
-* **SQLite/PostgreSQL** – Database management
+* **SQLite** – Database management
 * **Font Awesome 6** – Icon library
 * **jQuery** – Frontend interactivity
 
@@ -88,7 +88,7 @@ UTS-WEB-2025-ANDRE/
 * Platform ini menggunakan email-based authentication dengan role-based access control
 * File upload terbatas maksimal 5MB dengan validasi tipe file
 * Responsive design untuk mobile, tablet, dan desktop
-* Database default menggunakan SQLite untuk development, bisa diganti PostgreSQL untuk production
+* Database default menggunakan SQLite
 
 ## 📄 Lisensi
 
